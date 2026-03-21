@@ -1,7 +1,10 @@
+import os
 from fastapi import FastAPI
 from youtube_transcript_api import YouTubeTranscriptApi
 
 app = FastAPI()
+
+COOKIES_FILE = "cookies.txt"
 
 @app.get("/")
 def root():
@@ -10,7 +13,11 @@ def root():
 @app.get("/transcript/{video_id}")
 def get_transcript(video_id: str):
     try:
-        ytt = YouTubeTranscriptApi()
+        if os.path.exists(COOKIES_FILE):
+            ytt = YouTubeTranscriptApi(cookie_path=COOKIES_FILE)
+        else:
+            ytt = YouTubeTranscriptApi()
+
         try:
             fetched = ytt.fetch(video_id)
             lang = "en"
