@@ -1,6 +1,8 @@
 import os
 from fastapi import FastAPI
 from youtube_transcript_api import YouTubeTranscriptApi
+from requests import Session
+from http.cookiejar import MozillaCookieJar
 
 app = FastAPI()
 
@@ -13,8 +15,13 @@ def root():
 @app.get("/transcript/{video_id}")
 def get_transcript(video_id: str):
     try:
+        # Load cookies into a requests Session
+        session = Session()
         if os.path.exists(COOKIES_FILE):
-            ytt = YouTubeTranscriptApi(http_client=None, cookies=COOKIES_FILE)
+            cookie_jar = MozillaCookieJar(COOKIES_FILE)
+            cookie_jar.load(ignore_discard=True, ignore_expires=True)
+            session.cookies.update(cookie_jar)
+            ytt = YouTubeTranscriptApi(http_client=session)
         else:
             ytt = YouTubeTranscriptApi()
 
