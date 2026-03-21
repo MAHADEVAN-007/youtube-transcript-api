@@ -14,7 +14,7 @@ def root():
 def get_transcript(video_id: str):
     try:
         if os.path.exists(COOKIES_FILE):
-            ytt = YouTubeTranscriptApi(cookie_path=COOKIES_FILE)
+            ytt = YouTubeTranscriptApi(http_client=None, cookies=COOKIES_FILE)
         else:
             ytt = YouTubeTranscriptApi()
 
