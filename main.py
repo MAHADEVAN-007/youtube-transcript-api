@@ -34,7 +34,7 @@ def get_transcript(video_id: str):
             fetched = first.fetch()
             lang = first.language_code
 
-        full_text = " ".join([line.text for line in fetched])
+        full_text = "\n".join([f"[{round(line.start)}s] {line.text}" for line in fetched])
         return {
             "success": True,
             "video_id": video_id,
